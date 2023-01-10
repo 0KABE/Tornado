@@ -1,0 +1,3 @@
+[submodule "3rdparty/srs"]
+	path = 3rdparty/srs
+	url = https://github.com/ossrs/srs.git
