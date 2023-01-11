@@ -15,5 +15,5 @@ target_link_libraries(${LIBRARY_NAME}
         PUBLIC
         spdlog::spdlog
         asio::asio
-        SRS_LIB
+        SRS
         )

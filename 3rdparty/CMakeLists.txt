@@ -1,4 +1,4 @@
-set(LIBRARY_NAME SRS_LIB)
+set(LIBRARY_NAME SRS)
 
 add_library(${LIBRARY_NAME} "")
 target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_20)
@@ -16,6 +16,10 @@ target_compile_definitions(${LIBRARY_NAME}
 
 # Get SRS Directory
 set(SRS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/srs/trunk)
+
+# SRS Executable
+add_executable(${LIBRARY_NAME}_EXE ${SRS_DIR}/src/main/srs_main_server.cpp)
+target_link_libraries(${LIBRARY_NAME}_EXE PRIVATE ${LIBRARY_NAME})
 
 ###########################################################
 # Start to configure SRS with jobs of number of CPUs.
@@ -46,9 +50,6 @@ endforeach ()
 # Setup SRS project
 TARGET_INCLUDE_DIRECTORIES(${LIBRARY_NAME}
         PUBLIC
-        ${PROJECT_SOURCE_DIR}/interface
-        PRIVATE
-        ${PROJECT_SOURCE_DIR}/impl
         ${SRS_DIR}/objs
         ${SRS_DIR}/objs/st
         ${SRS_DIR}/objs/hp
