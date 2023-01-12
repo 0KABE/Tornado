@@ -27,11 +27,6 @@ target_sources(${LIB_NAME}
 
 target_compile_features(${LIB_NAME} PUBLIC cxx_std_20)
 
-target_compile_definitions(${LIB_NAME} PRIVATE
-        UT_BIN_NAME=\"${LIB_NAME}\"
-        UT_BIN_PATH=\"${CMAKE_CURRENT_BINARY_DIR}\"
-        )
-
 include(GoogleTest)
 enable_testing()
 gtest_discover_tests(${LIB_NAME})
