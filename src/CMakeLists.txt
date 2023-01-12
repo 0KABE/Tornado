@@ -2,6 +2,7 @@ set(LIBRARY_NAME Tornado)
 
 add_library(${LIBRARY_NAME}
         base.cc
+        args_separator.cc
         )
 
 target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_20)

@@ -15,6 +15,11 @@ target_link_libraries(
         CLI11::CLI11
 )
 
+target_include_directories(${LIB_NAME}
+        PRIVATE
+        ${PROJECT_SOURCE_DIR}/src
+        )
+
 target_compile_options(${LIB_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
 target_sources(${LIB_NAME}
