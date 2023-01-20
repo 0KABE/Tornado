@@ -2,17 +2,6 @@ set(LIBRARY_NAME SRS)
 
 add_library(${LIBRARY_NAME} "")
 target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_20)
-target_compile_definitions(${LIBRARY_NAME}
-        PUBLIC
-        # ASIO definition
-        ASIO_USE_TS_EXECUTOR_AS_DEFAULT
-        ASIO_NO_DEPRECATED
-        # SRS ST definition
-        LINUX
-        DEBUG
-        MD_HAVE_EPOLL
-        MALLOC_STACK
-        )
 
 # Get SRS Directory
 set(SRS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/srs/trunk)
