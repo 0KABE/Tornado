@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Tornado_UTest" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Tornado" TARGET_NAME="Tornado_UTest" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Tornado" RUN_TARGET_NAME="Tornado_UTest" TEST_MODE="SUITE_TEST">
+    <envs>
+      <env name="SRS_StartAndStop_Config" value="../../3rdparty/conf/rtmp.conf" />
+    </envs>
     <method v="2">
       <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       <option name="BeforeTestRunTask" enabled="true" />

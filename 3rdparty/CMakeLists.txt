@@ -50,6 +50,8 @@ endforeach ()
 # Setup SRS project
 TARGET_INCLUDE_DIRECTORIES(${LIBRARY_NAME}
         PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+
         ${SRS_DIR}/objs
         ${SRS_DIR}/objs/st
         ${SRS_DIR}/objs/hp
@@ -68,6 +70,7 @@ TARGET_COMPILE_OPTIONS(${LIBRARY_NAME} PRIVATE -g -O0)
 
 TARGET_SOURCES(${LIBRARY_NAME}
         PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/entrypoint.cc
         # SRS source code
         ${SRS_DIR}/src/app/srs_app_async_call.cpp
         ${SRS_DIR}/src/app/srs_app_bandwidth.cpp
