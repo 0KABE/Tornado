@@ -19,9 +19,9 @@ endif ()
 include(cmake/conan.cmake)
 conan_cmake_configure(
         REQUIRES
-        gtest/1.10.0
-        spdlog/1.9.2
-        cli11/2.2.0
+        gtest/1.13.0
+        spdlog/1.11.0
+        cli11/2.3.2
         asio/1.24.0
 
         GENERATORS
