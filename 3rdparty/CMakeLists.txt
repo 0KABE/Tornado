@@ -6,6 +6,9 @@ target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_20)
 # Get SRS Directory
 set(SRS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/srs/trunk)
 
+MESSAGE("Lock ${SRS_DIR} for configure")
+FILE(LOCK ${SRS_DIR} DIRECTORY)
+
 # SRS Executable
 add_executable(${LIBRARY_NAME}_EXE ${SRS_DIR}/src/main/srs_main_server.cpp)
 target_link_libraries(${LIBRARY_NAME}_EXE PRIVATE ${LIBRARY_NAME})
@@ -155,3 +158,6 @@ TARGET_LINK_LIBRARIES(${LIBRARY_NAME}
         )
 
 MESSAGE(STATUS "@see https://github.com/ossrs/srs/wiki/v4_CN_IDE")
+
+MESSAGE("Unlock ${SRS_DIR}")
+FILE(LOCK ${SRS_DIR} DIRECTORY RELEASE)
