@@ -12,7 +12,6 @@ target_link_libraries(
         Tornado
         GTest::gtest
         spdlog::spdlog
-        CLI11::CLI11
 )
 
 target_include_directories(${LIB_NAME}

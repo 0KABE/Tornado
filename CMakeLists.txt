@@ -21,7 +21,6 @@ conan_cmake_configure(
         REQUIRES
         gtest/1.13.0
         spdlog/1.11.0
-        cli11/2.3.2
         asio/1.24.0
 
         GENERATORS
@@ -37,7 +36,6 @@ conan_cmake_install(PATH_OR_REFERENCE .
 
 find_package(GTest REQUIRED)
 find_package(spdlog REQUIRED)
-find_package(CLI11 REQUIRED)
 find_package(asio REQUIRED)
 
 add_subdirectory(src)
