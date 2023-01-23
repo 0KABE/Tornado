@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 
 #include <asio.hpp>
+#include <thread>
 
 #include "tornado/base.h"
 
