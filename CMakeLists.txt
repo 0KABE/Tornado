@@ -10,7 +10,8 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 # Conan Home Path
-if (DEFINED ENV{CONAN_USER_HOME})
+if (DEFINED ENV{CONAN_ISOLATE})
+    set(ENV{CONAN_USER_HOME} ${CMAKE_BINARY_DIR})
     message("Conan Home: $ENV{CONAN_USER_HOME}")
 else ()
     message("Conan Home: Default conan home")
