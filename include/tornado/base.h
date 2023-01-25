@@ -7,6 +7,5 @@
 #include <asio.hpp>
 
 namespace Tornado {
-    using UseAwaitable = decltype(asio::use_awaitable);
+using UseAwaitable = decltype(asio::use_awaitable);
 }
-

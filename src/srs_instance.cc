@@ -12,22 +12,26 @@
 #include <srs_kernel_error.hpp>
 #include <srs_kernel_log.hpp>
 
+#include "args_separator.h"
 #include "entrypoint.h"
 #include "final.h"
 
-Tornado::SRSInstance::SRSInstance(int argc, char** argv) {
-  srs_error_t err = do_main(argc, argv);
-  Final _([&] { srs_freep(err); });
+void Tornado::SRSInstance::Run(const std::string& arguments) {
+  srs_thread_ = std::thread([arguments] {
+    Tornado::ArgsSeparator args_separator(arguments);
 
-  if (err != srs_success) {
-    srs_error("Failed, %s", srs_error_desc(err).c_str());
-    throw std::runtime_error("fail to execute do_main");
-  }
-}
-
-void Tornado::SRSInstance::Run() {
-  srs_thread_ = std::thread([] {
     srs_error_t err = srs_success;
+    Final _([&] { srs_freep(err); });
+
+    err = do_main(args_separator.GetArgc(), args_separator.GetArgv());
+
+    if (err != srs_success) {
+      srs_error("Failed, %s", srs_error_desc(err).c_str());
+      throw std::runtime_error("fail to execute do_main");
+    }
+
+    Tornado::TornadoCoroutine tornado_coroutine;
+    tornado_coroutine.Start();
 
     if ((err = run_directly_or_daemon()) != srs_success) {
       throw std::runtime_error(srs_error_summary(err));
@@ -57,4 +61,36 @@ void Tornado::SRSInstance::FastStop() {
     srs_thread_.join();
     spdlog::info("Complete to stop SRS in fast");
   }
+}
+
+Tornado::TornadoCoroutine::TornadoCoroutine()
+    : st_coroutine_(new SrsSTCoroutine(kCoroutineName, this, _srs_context->get_id())) {}
+
+srs_error_t Tornado::TornadoCoroutine::Start() {
+  srs_error_t err = srs_success;
+
+  if ((err = st_coroutine_->start()) != srs_success) {
+    return srs_error_wrap(err, "start timer");
+  }
+
+  return err;
+}
+
+srs_error_t Tornado::TornadoCoroutine::cycle() {
+  // TODO:
+  //  1. startup coroutine in SRS
+  //  2. use st_mutex in signal handler & cycle
+  srs_error_t err = srs_success;
+
+  for (;;) {
+    spdlog::info("st_coroutine: {}", fmt::ptr(st_coroutine_.get()));
+    if ((err = st_coroutine_->pull()) != srs_success) {
+      return srs_error_wrap(err, "quit");
+    }
+
+    spdlog::info("Tornado::TornadoCoroutine::cycle()");
+    srs_usleep(100 * SRS_UTIME_MILLISECONDS);
+  }
+
+  return err;
 }

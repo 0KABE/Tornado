@@ -4,15 +4,16 @@
 
 #pragma once
 
+#include <srs_app_st.hpp>
 #include <thread>
 
 namespace Tornado {
 
 class SRSInstance {
  public:
-  SRSInstance(int argc, char** argv);
+  SRSInstance() = default;
 
-  void Run();
+  void Run(const std::string& arguments);
 
   /**
    * Like as gracefully quit in SRS, thread will not stop until there are no connection
@@ -30,6 +31,21 @@ class SRSInstance {
 
  private:
   std::thread srs_thread_;
+};
+
+class TornadoCoroutine : public ISrsCoroutineHandler {
+ public:
+  constexpr static const char* kCoroutineName = "TornadoCoroutine";
+
+  TornadoCoroutine();
+
+  srs_error_t Start();
+  void NotifyOnce();
+
+ private:
+  srs_error_t cycle() override;
+
+  std::unique_ptr<SrsSTCoroutine> st_coroutine_;
 };
 
 }  // namespace Tornado
