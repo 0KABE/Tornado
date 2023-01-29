@@ -10,18 +10,33 @@
 #include "srs_instance.h"
 
 using namespace std::chrono_literals;
+using namespace Tornado;
+
+constexpr static const char* kConfigEnv = "SRS_Config";
 
 TEST(SRS, StartAndStop) {
-  std::string config_env =
-      fmt::format("{}_{}_Config", test_info_->test_suite_name(), test_info_->name());
-
-  const char* config_path = getenv(config_env.c_str());
-  ASSERT_NE(config_path, nullptr);
+  const char* config_path = getenv(kConfigEnv);
 
   Tornado::SRSInstance srs_entrypoint;
 
   srs_entrypoint.Run(fmt::format("srs -c {}", config_path));
-  std::this_thread::sleep_for(100ms);
+  std::this_thread::sleep_for(100000s);
   srs_entrypoint.FastStop();
   //  srs_entrypoint.GracefullyStop();  // SIGQUIT may not work under IDE env
 }
+
+//TEST(SRS, NotifyOnece) {
+//  const char* config_path = getenv(kConfigEnv);
+//  ASSERT_NE(config_path, nullptr);
+//
+//  SRSInstance srs_entrypoint;
+//
+//  srs_entrypoint.Run(fmt::format("srs -c {}", config_path));
+//
+//  for (unsigned i = 0; i < 5; ++i) {
+//    std::this_thread::sleep_for(i * 50ms);
+//    srs_entrypoint.GetControlCoroutine().NotifyOnce(NotificationEvent::kPlaceholder);
+//  }
+//
+//  srs_entrypoint.FastStop();
+//}
