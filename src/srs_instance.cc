@@ -100,7 +100,7 @@ srs_error_t Tornado::TornadoCoroutine::Start() {
 }
 
 void Tornado::TornadoCoroutine::NotifyOnce(Tornado::NotificationEvent notification_event) const {
-  if (int ret = write(pipe_[1], &notification_event, sizeof(notification_event));
+  if (auto ret = write(pipe_[1], &notification_event, sizeof(notification_event));
       ret < sizeof(notification_event)) {
     spdlog::info("write notification event failed, write() returns {}, {}({})", ret, errno,
                  strerror(errno));
@@ -125,6 +125,4 @@ srs_error_t Tornado::TornadoCoroutine::cycle() {
     spdlog::info("read notification event");
     //    srs_usleep(100 * SRS_UTIME_MILLISECONDS);
   }
-
-  return err;
 }
