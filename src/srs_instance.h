@@ -35,6 +35,11 @@ class SRSInstance {
  public:
   SRSInstance() = default;
 
+  /**
+   *
+   * @param arguments
+   * @note sync version, guarantee that the `TornadoCoroutine` initialization is complete
+   */
   void Run(const std::string& arguments);
 
   /**
@@ -54,6 +59,7 @@ class SRSInstance {
   ~SRSInstance() = default;
 
  private:
+  std::unique_ptr<TornadoCoroutine> tornado_coroutine_;
   std::thread srs_thread_;
 };
 
