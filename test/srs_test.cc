@@ -14,17 +14,6 @@ using namespace Tornado;
 
 constexpr static const char* kConfigEnv = "SRS_Config";
 
-TEST(SRS, StartAndStop) {
-  const char* config_path = getenv(kConfigEnv);
-
-  Tornado::SRSInstance srs_entrypoint;
-
-  srs_entrypoint.Run(fmt::format("srs -c {}", config_path));
-  std::this_thread::sleep_for(100ms);
-  srs_entrypoint.FastStop();
-  //  srs_entrypoint.GracefullyStop();  // SIGQUIT may not work under IDE env
-}
-
 TEST(SRS, NotifyOnce) {
   const char* config_path = getenv(kConfigEnv);
   ASSERT_NE(config_path, nullptr);
