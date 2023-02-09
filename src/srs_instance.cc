@@ -123,6 +123,23 @@ srs_error_t Tornado::TornadoCoroutine::cycle() {
     NotificationEvent notification_event;
     srs_read(read_fd_, &notification_event, sizeof(notification_event), SRS_UTIME_NO_TIMEOUT);
     spdlog::info("read notification event");
+
+    if (notification_event == NotificationEvent::kTask) {
+      Task task;
+
+      {
+        std::lock_guard<std::mutex> _(mutex_);
+        task = std::move_if_noexcept(tasks_.front());
+        tasks_.pop();
+      }
+
+      task();
+    }
     //    srs_usleep(100 * SRS_UTIME_MILLISECONDS);
   }
+}
+
+void Tornado::TornadoCoroutine::PushTask(std::function<void()> task) const {
+  std::lock_guard<std::mutex> _(mutex_);
+  tasks_.push(std::move_if_noexcept(task));
 }

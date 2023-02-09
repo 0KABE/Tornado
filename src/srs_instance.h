@@ -5,21 +5,27 @@
 #pragma once
 
 #include <array>
+#include <functional>
 #include <optional>
+#include <queue>
 #include <srs_app_st.hpp>
 #include <thread>
 
 namespace Tornado {
 
-enum class NotificationEvent { kPlaceholder };
+enum class NotificationEvent { kPlaceholder, kTask };
 
 class TornadoCoroutine : public ISrsCoroutineHandler {
  public:
+  using Task = std::function<void()>;
+
   constexpr static const char* kCoroutineName = "tornado";
 
   TornadoCoroutine();
 
   srs_error_t Start();
+
+  void PushTask(Task task) const;
 
   void NotifyOnce(NotificationEvent notification_event) const;
 
@@ -29,6 +35,9 @@ class TornadoCoroutine : public ISrsCoroutineHandler {
   std::array<int, 2> pipe_{-1, -1};
   srs_netfd_t read_fd_{nullptr};
   std::unique_ptr<SrsCoroutine> coroutine_;
+
+  mutable std::mutex mutex_;
+  mutable std::queue<Task> tasks_;
 };
 
 class SRSInstance {
