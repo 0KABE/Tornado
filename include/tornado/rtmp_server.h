@@ -20,7 +20,7 @@ class RTMPServer : public std::enable_shared_from_this<RTMPServer> {
   static constexpr const char* kRtmpApp = "live";
   static constexpr const char* kRtmpVhost = "okab3";
 
-  RTMPServer(std::string config_path) : config_path_(std::move(config_path)), instance_() {}
+  explicit RTMPServer(std::string config_path);
 
   void Run();
   void Stop();
@@ -32,5 +32,6 @@ class RTMPServer : public std::enable_shared_from_this<RTMPServer> {
  private:
   std::string config_path_;
   SRSInstance instance_;
+  std::jthread thread_;
 };
 }  // namespace Tornado

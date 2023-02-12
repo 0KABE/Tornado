@@ -15,13 +15,20 @@
 #include "base.h"
 #include "rtmp_stream.h"
 
+Tornado::RTMPServer::RTMPServer(std::string config_path)
+    : config_path_(std::move(config_path)), instance_() {}
+
 void Tornado::RTMPServer::Run() { instance_.Run(fmt::format("srs -c {}", config_path_)); }
 
 asio::awaitable<void> Tornado::RTMPServer::AsyncRun() {
   return asio::async_initiate<UseAwaitable, void()>(
       [self = shared_from_this()](auto handler) {
-        self->Run();
-        handler();
+        using Handler = decltype(handler);
+        std::shared_ptr<Handler> handler_ptr = std::make_shared<Handler>(std::move(handler));
+        self->thread_ = std::jthread([self, handler_ptr] {
+          self->Run();
+          (*handler_ptr)();
+        });
       },
       asio::use_awaitable);
 }
