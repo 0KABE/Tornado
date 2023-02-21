@@ -121,7 +121,12 @@ srs_error_t Tornado::TornadoCoroutine::cycle() {
     }
 
     NotificationEvent notification_event;
-    srs_read(read_fd_, &notification_event, sizeof(notification_event), SRS_UTIME_NO_TIMEOUT);
+
+    if (auto size = srs_read(read_fd_, &notification_event, sizeof(notification_event),
+                             SRS_UTIME_NO_TIMEOUT);
+        size < 0) {
+      continue;
+    }
     spdlog::info("read notification event");
 
     if (notification_event == NotificationEvent::kTask) {
