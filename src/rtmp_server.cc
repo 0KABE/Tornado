@@ -18,24 +18,24 @@
 Tornado::RTMPServer::RTMPServer(std::string config_path)
     : config_path_(std::move(config_path)), instance_() {}
 
-void Tornado::RTMPServer::Run() { instance_.Run(fmt::format("srs -c {}", config_path_)); }
+void Tornado::RTMPServer::Run() {
+  instance_.Run(fmt::format("srs -c {}", config_path_));
+  spdlog::info("RTMPServer::Run() completed");
+}
 
 asio::awaitable<void> Tornado::RTMPServer::AsyncRun() {
   return asio::async_initiate<UseAwaitable, void()>(
       [self = shared_from_this()](auto handler) {
-        using Handler = decltype(handler);
-        std::shared_ptr<Handler> handler_ptr = std::make_shared<Handler>(std::move(handler));
-        self->thread_ = std::jthread([self, handler_ptr] {
-          self->Run();
-          (*handler_ptr)();
-        });
+        self->Run();
+        spdlog::info("RTMPServer::AsyncRun() completed");
+        handler();
       },
       asio::use_awaitable);
 }
 
 void Tornado::RTMPServer::Stop() { instance_.FastStop(); }
 
-asio::awaitable<std::shared_ptr<Tornado::RTMPStream>> Tornado::RTMPServer::AsyncCreateOrGetStream(
+asio::awaitable<Tornado::RTMPServer::RTMPStreamPtr> Tornado::RTMPServer::AsyncCreateOrGetStream(
     std::string token) {
   return asio::async_initiate<decltype(asio::use_awaitable), void(RTMPStreamPtr)>(
       [self = shared_from_this(), token](auto handler) {
@@ -62,6 +62,7 @@ asio::awaitable<std::shared_ptr<Tornado::RTMPStream>> Tornado::RTMPServer::Async
 
               (*handler)(std::make_shared<RTMPStream>(srs_live_source));
             });
+        self->instance_.GetControlCoroutine().NotifyOnce(NotificationEvent::kTask);
       },
       asio::use_awaitable);
 }

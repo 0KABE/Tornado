@@ -52,7 +52,7 @@ void Tornado::SRSInstance::Run(const std::string& arguments) {
 
 void Tornado::SRSInstance::GracefullyStop() {
   spdlog::info("Gracefully stop SRS");
-  if (auto err = pthread_kill(srs_thread_.native_handle(), SIGQUIT)) {
+  if (auto err = pthread_kill(srs_thread_.native_handle(), SRS_SIGNAL_GRACEFULLY_QUIT)) {
     spdlog::error("Gracefully stop failed, error: {}", err);
   }
   if (srs_thread_.joinable()) {
@@ -63,7 +63,7 @@ void Tornado::SRSInstance::GracefullyStop() {
 
 void Tornado::SRSInstance::FastStop() {
   spdlog::info("Fast stop SRS");
-  if (auto err = pthread_kill(srs_thread_.native_handle(), SIGTERM)) {
+  if (auto err = pthread_kill(srs_thread_.native_handle(), SRS_SIGNAL_FAST_QUIT)) {
     spdlog::error("Fast stop failed, error: {}", err);
   }
   if (srs_thread_.joinable()) {

@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <spdlog/spdlog.h>
+
 #include <asio.hpp>
 #include <memory>
 #include <utility>
@@ -22,16 +24,18 @@ class RTMPServer : public std::enable_shared_from_this<RTMPServer> {
 
   explicit RTMPServer(std::string config_path);
 
+  ~RTMPServer() { spdlog::info("~RTMPServer();"); }
+
   void Run();
   void Stop();
   asio::awaitable<void> AsyncRun();
 
-  std::shared_ptr<RTMPStream> CreateOrGetStream();                           // Sync call
+  RTMPStreamPtr CreateOrGetStream();                                         // Sync call
   asio::awaitable<RTMPStreamPtr> AsyncCreateOrGetStream(std::string token);  // Async call
 
  private:
+  std::jthread thread_;
   std::string config_path_;
   SRSInstance instance_;
-  std::jthread thread_;
 };
 }  // namespace Tornado

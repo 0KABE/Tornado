@@ -20,15 +20,25 @@ TEST(RTMPServer, Startup) {
 
   asio::io_context io_context;
 
-  asio::co_spawn(
-      io_context.get_executor(),
-      [rtmp_server]() -> asio::awaitable<void> { return rtmp_server->AsyncRun(); }, asio::detached);
+  //  asio::co_spawn(
+  //      io_context.get_executor(),
+  //      [rtmp_server]() -> asio::awaitable<void> {
+  //        co_await rtmp_server->AsyncRun();
+  //        spdlog::info("Call rtmp_server AsyncRun() completed");
+  //      },
+  //      asio::detached);
+  rtmp_server->Run();
 
   asio::co_spawn(
       io_context.get_executor(),
       [rtmp_server]() -> asio::awaitable<void> {
         auto executor = co_await asio::this_coro::executor;
         asio::steady_timer timer(executor);
+
+        timer.expires_after(std::chrono::milliseconds(1000));
+        co_await timer.async_wait(asio::use_awaitable);
+        auto stream = co_await rtmp_server->AsyncCreateOrGetStream("test");
+
         timer.expires_after(std::chrono::milliseconds(500));
         co_await timer.async_wait(asio::use_awaitable);
         rtmp_server->Stop();
