@@ -23,16 +23,6 @@ void Tornado::RTMPServer::Run() {
   spdlog::info("RTMPServer::Run() completed");
 }
 
-asio::awaitable<void> Tornado::RTMPServer::AsyncRun() {
-  return asio::async_initiate<UseAwaitable, void()>(
-      [self = shared_from_this()](auto handler) {
-        self->Run();
-        spdlog::info("RTMPServer::AsyncRun() completed");
-        handler();
-      },
-      asio::use_awaitable);
-}
-
 void Tornado::RTMPServer::Stop() { instance_.FastStop(); }
 
 asio::awaitable<Tornado::RTMPServer::RTMPStreamPtr> Tornado::RTMPServer::AsyncCreateOrGetStream(

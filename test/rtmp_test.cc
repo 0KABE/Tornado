@@ -20,13 +20,6 @@ TEST(RTMPServer, Startup) {
 
   asio::io_context io_context;
 
-  //  asio::co_spawn(
-  //      io_context.get_executor(),
-  //      [rtmp_server]() -> asio::awaitable<void> {
-  //        co_await rtmp_server->AsyncRun();
-  //        spdlog::info("Call rtmp_server AsyncRun() completed");
-  //      },
-  //      asio::detached);
   rtmp_server->Run();
 
   asio::co_spawn(

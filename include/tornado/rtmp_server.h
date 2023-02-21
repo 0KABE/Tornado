@@ -28,7 +28,6 @@ class RTMPServer : public std::enable_shared_from_this<RTMPServer> {
 
   void Run();
   void Stop();
-  asio::awaitable<void> AsyncRun();
 
   RTMPStreamPtr CreateOrGetStream();                                         // Sync call
   asio::awaitable<RTMPStreamPtr> AsyncCreateOrGetStream(std::string token);  // Async call
