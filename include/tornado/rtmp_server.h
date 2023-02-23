@@ -20,7 +20,7 @@ class RTMPServer : public std::enable_shared_from_this<RTMPServer> {
   using RTMPStreamPtr = std::shared_ptr<RTMPStream>;
 
   static constexpr const char* kRtmpApp = "live";
-  static constexpr const char* kRtmpVhost = "okab3";
+  static constexpr const char* kRtmpVhost = "/okab3";
 
   explicit RTMPServer(std::string config_path);
 
