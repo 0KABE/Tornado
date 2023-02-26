@@ -101,7 +101,7 @@ srs_error_t Tornado::TornadoCoroutine::Start() {
 
 void Tornado::TornadoCoroutine::NotifyOnce(Tornado::NotificationEvent notification_event) const {
   if (auto ret = write(pipe_[1], &notification_event, sizeof(notification_event));
-      ret < sizeof(notification_event)) {
+      static_cast<size_t>(ret) < sizeof(notification_event)) {
     spdlog::info("write notification event failed, write() returns {}, {}({})", ret, errno,
                  strerror(errno));
     throw std::runtime_error("fail to write into pipe");

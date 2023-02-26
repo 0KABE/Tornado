@@ -31,7 +31,7 @@ ArgsSeparator::Argc ArgsSeparator::GetArgc() const {
 ArgsSeparator::Argv ArgsSeparator::GetArgv() const { return word_exp_.we_wordv; }
 
 ArgsSeparator::Arg ArgsSeparator::operator[](size_t index) const {
-  if (index >= GetArgc()) {
+  if (index >= static_cast<size_t>(GetArgc())) {
     throw std::overflow_error("index is larger than argc");
   }
   return word_exp_.we_wordv[index];
