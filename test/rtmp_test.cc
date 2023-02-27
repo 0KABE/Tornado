@@ -7,6 +7,7 @@
 #include <asio.hpp>
 
 #include "tornado/rtmp_server.h"
+#include "tornado/rtmp_stream.h"
 
 using namespace Tornado;
 
@@ -28,13 +29,31 @@ TEST(RTMPServer, Startup) {
         auto executor = co_await asio::this_coro::executor;
         asio::steady_timer timer(executor);
 
-        timer.expires_after(std::chrono::milliseconds(1000));
-        co_await timer.async_wait(asio::use_awaitable);
-        auto stream = co_await rtmp_server->AsyncCreateOrGetStream("test");
-
-        timer.expires_after(std::chrono::milliseconds(500));
+        timer.expires_after(std::chrono::seconds(10));
         co_await timer.async_wait(asio::use_awaitable);
         rtmp_server->Stop();
+      },
+      asio::detached);
+
+  asio::co_spawn(
+      io_context.get_executor(),
+      [rtmp_server]() -> asio::awaitable<void> {
+        auto executor = co_await asio::this_coro::executor;
+        asio::steady_timer timer(executor);
+
+        timer.expires_after(std::chrono::seconds(3));
+        co_await timer.async_wait(asio::use_awaitable);
+
+        constexpr const char* kToken = "test";
+        spdlog::info("AsyncCreateOrGetStream: {}", kToken);
+        std::shared_ptr<RTMPStream> stream = co_await rtmp_server->AsyncCreateOrGetStream(kToken);
+
+        constexpr unsigned kCount = 20;
+        for (unsigned i = 0; i < kCount; ++i) {
+          auto message = co_await stream->AsyncFetchVideoMessage();
+          spdlog::info("received video messages");
+        }
+        spdlog::info("received {} video messages", kCount);
       },
       asio::detached);
 

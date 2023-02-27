@@ -7,6 +7,7 @@ add_library(${LIBRARY_NAME}
         final.cc
         rtmp_server.cc
         rtmp_stream.cc
+        event.cc
         )
 
 target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_20)

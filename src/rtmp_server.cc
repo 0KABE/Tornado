@@ -50,7 +50,9 @@ asio::awaitable<Tornado::RTMPServer::RTMPStreamPtr> Tornado::RTMPServer::AsyncCr
               }
               srs_freep(err);
 
-              (*handler)(std::make_shared<RTMPStream>(srs_live_source));
+              auto rtmp_stream = std::make_shared<RTMPStream>(srs_live_source);
+              rtmp_stream->RegisterBridge();
+              (*handler)(rtmp_stream);
             });
         self->instance_.GetControlCoroutine().NotifyOnce(NotificationEvent::kTask);
       },
