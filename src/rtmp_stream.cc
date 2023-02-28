@@ -30,19 +30,7 @@ asio::awaitable<Tornado::VideoMessage> Tornado::RTMPStream::AsyncFetchVideoMessa
   }
 
   co_await video_waiter_->AsyncWait();
-
   VideoMessage video_message = co_await AsyncFetchVideoMessageInternal();
-  //  VideoMessage video_message = co_await asio::co_spawn(
-  //      co_await asio::this_coro::executor,
-  //      [self = shared_from_this()]() -> asio::awaitable<VideoMessage> {
-  //        std::lock_guard _(self->mutex_);
-  //        VideoMessage video_message(
-  //            self->video_message_->size,
-  //            reinterpret_cast<VideoMessage::PayloadItem *>(self->video_message_->payload));
-  //        co_return video_message;
-  //      },
-  //      asio::use_awaitable);
-
   co_return video_message;
 }
 
