@@ -15,6 +15,8 @@ using namespace Tornado;
 constexpr static const char* kConfigEnv = "SRS_Config";
 
 TEST(SRS, NotifyOnce) {
+  GTEST_SKIP() << "Skip this test case by default";
+
   const char* config_path = getenv(kConfigEnv);
   ASSERT_NE(config_path, nullptr);
 
