@@ -8,6 +8,7 @@
 
 #include <asio.hpp>
 #include <memory>
+#include <thread>
 #include <utility>
 
 #include "srs_instance.h"
@@ -24,16 +25,21 @@ class RTMPServer : public std::enable_shared_from_this<RTMPServer> {
 
   explicit RTMPServer(std::string config_path);
 
-  ~RTMPServer() { spdlog::info("~RTMPServer();"); }
+  ~RTMPServer() {
+    spdlog::info("~RTMPServer();");
+    if (thread_.joinable()) {
+      thread_.join();
+    }
+  }
 
   void Run();
   void Stop();
 
-//  RTMPStreamPtr CreateOrGetStream();                                         // Sync call
+  //  RTMPStreamPtr CreateOrGetStream();                                         // Sync call
   asio::awaitable<RTMPStreamPtr> AsyncCreateOrGetStream(std::string token);  // Async call
 
  private:
-  std::jthread thread_;
+  std::thread thread_;
   std::string config_path_;
   SRSInstance instance_;
 };

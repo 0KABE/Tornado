@@ -5,6 +5,7 @@
 #include "srs_instance.h"
 
 #include <spdlog/spdlog.h>
+#include <unistd.h>
 
 #include <csignal>
 #include <exception>
